@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans 
+       		http://www.springframework.org/schema/beans/spring-beans.xsd 
+       		http://www.springframework.org/schema/context 
+       		http://www.springframework.org/schema/context/spring-context.xsd
+       		http://www.springframework.org/schema/aop 
+       		http://www.springframework.org/schema/aop/spring-aop.xsd"
+       default-autowire="byName">
+
+	<!-- service层统一异常处理    -->  
+    <bean id="proxyExceptionHandler" class="com.retail.commons.exception.ext.ProxyExceptionHandler"/>
+	<aop:config proxy-target-class="true">
+   	 	<aop:aspect ref="proxyExceptionHandler">
+	    	<aop:pointcut id="serviceExceptionHandlerPointcut" expression="execution(* com.retail..service.*.*(..)) " />
+	    	<aop:after-throwing method="afterThrowing" pointcut-ref="serviceExceptionHandlerPointcut" arg-names="ex" throwing="ex"/>
+   		</aop:aspect>
+	</aop:config>
+	 
+	<!-- service层统一方法监控处理   --> 
+	<bean id="proxyMonitorHandler" class="com.retail.commons.monitor.ProxyMonitorHandler"/>
+	<aop:config proxy-target-class="true">
+		<aop:aspect ref="proxyMonitorHandler">
+			<aop:pointcut id="serviceMonitorHandlerPointcut" expression="execution(* com.retail..service.*.*(..))" />
+		    <aop:around pointcut-ref="serviceMonitorHandlerPointcut" method="watchMonitor"/>
+	    </aop:aspect>
+	</aop:config>
+	<!-- 注入多点监控 -->	
+	<bean id="monitorConfig"   class="com.dmall.monitor.sdk.MonitorConfig" init-method="monitorInit">
+   	 	<constructor-arg name="projectCode" value="${monitor.project.code}" />
+   	 	<constructor-arg name="appCode" value="${monitor.project.module}" />
+   		 <constructor-arg name="startupMonitor" value="${monitor.start}"></constructor-arg>
+	</bean>
+
+	<!-- springUtis -->
+    <bean id="springUtils" class="com.retail.commons.utils.SpringUtils"></bean>
+    
+</beans>

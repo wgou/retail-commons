@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="namespace_erpprivilege">
+<resultMap id="erpprivilege" type="com.retail.xx.entity.ErpPrivilege" >
+		<result property="privilegeCode" column="privilege_code" jdbcType="VARCHAR" ></result>
+		<result property="icon" column="icon" jdbcType="VARCHAR" ></result>
+		<result property="remark" column="remark" jdbcType="VARCHAR" ></result>
+		<result property="status"  column="status" jdbcType="VARCHAR" ></result>
+		<result property="erpDomainSysId" column="erp_domain_sys_id" jdbcType="INTEGER" ></result>
+		<result property="orderNum" column="order_num" jdbcType="INTEGER" ></result>
+		<result property="pid" column="pid" jdbcType="INTEGER" ></result>
+		<result property="modified" column="modified" jdbcType="DATE" ></result>
+		<result property="id" column="id" jdbcType="INTEGER" ></result>
+		<result property="privilegeType" column="privilege_type" jdbcType="INTEGER" ></result>
+		<result property="erpSysId" column="erp_sys_id" jdbcType="INTEGER" ></result>
+		<result property="created" column="created" jdbcType="DATE" ></result>
+		<result property="privilegeUrl" column="privilege_url" jdbcType="VARCHAR" ></result>
+		<result property="privilegeName" column="privilege_name" jdbcType="VARCHAR" ></result>
+		<result property="flagLeaf" column="flag_leaf" jdbcType="INTEGER" ></result>
+  </resultMap>
+	<!-- ##########################查询####################### -->
+ 	<!-- 查询表 -->
+<sql id="select_all_cloumn">
+	select privilege_code,icon,remark,status,erp_domain_sys_id,order_num,pid,modified,id,privilege_type,erp_sys_id,created,privilege_url,privilege_name,flag_leaf from erp_privilege
+</sql>
+<!-- 条件 -->
+<sql id="where-all-condition">
+ 	<trim prefix="where" prefixOverrides="and">
+ 	 <if test="privilegeCode!= null" >
+		and privilege_code=#{privilegeCode}
+ 	 </if>
+ 	 <if test="icon!= null" >
+		and icon=#{icon}
+ 	 </if>
+ 	 <if test="remark!= null" >
+		and remark=#{remark}
+ 	 </if>
+ 	 <if test="status!= null" >
+		and status=#{status}
+ 	 </if>
+ 	 <if test="erpDomainSysId!= null" >
+		and erp_domain_sys_id=#{erpDomainSysId}
+ 	 </if>
+ 	 <if test="orderNum!= null" >
+		and order_num=#{orderNum}
+ 	 </if>
+ 	 <if test="pid!= null" >
+		and pid=#{pid}
+ 	 </if>
+ 	 <if test="modified!= null" >
+		and modified=#{modified}
+ 	 </if>
+ 	 <if test="id!= null" >
+		and id=#{id}
+ 	 </if>
+ 	 <if test="privilegeType!= null" >
+		and privilege_type=#{privilegeType}
+ 	 </if>
+ 	 <if test="erpSysId!= null" >
+		and erp_sys_id=#{erpSysId}
+ 	 </if>
+ 	 <if test="created!= null" >
+		and created=#{created}
+ 	 </if>
+ 	 <if test="privilegeUrl!= null" >
+		and privilege_url=#{privilegeUrl}
+ 	 </if>
+ 	 <if test="privilegeName!= null" >
+		and privilege_name=#{privilegeName}
+ 	 </if>
+ 	 <if test="flagLeaf!= null" >
+		and flag_leaf=#{flagLeaf}
+ 	 </if>
+ 	</trim>
+</sql>
+ 	 <!-- 查询总数 -->
+<select id="count_erp_privilege" resultType="java.lang.Long">
+	select count(*) from erp_privilege
+	<include refid="namespace_erpprivilege.where-all-condition" ></include>
+</select>
+ 	 <!-- 查询单条记录 -->
+<select id="selectOne_erp_privilege" resultMap="erpprivilege">
+	<include refid="namespace_erpprivilege.select_all_cloumn" ></include>
+	<include refid="namespace_erpprivilege.where-all-condition" ></include>
+</select>
+ 	  	<!-- 查询集合/分页 -->
+<select id="select_erp_privilege" resultMap="erpprivilege">
+	select * from ( 
+	<include refid="namespace_erpprivilege.select_all_cloumn" ></include>
+	<include refid="namespace_erpprivilege.where-all-condition" ></include>
+	)t
+</select>
+ <!-- ######################### 插入操作 ######################## -->
+<!-- 插入单条 -->
+<insert id="insert_erp_privilege" useGeneratedKeys="true" keyProperty="id" >
+	insert into erp_privilege (privilege_code,icon,remark,status,erp_domain_sys_id,order_num,pid,modified,id,privilege_type,erp_sys_id,created,privilege_url,privilege_name,flag_leaf) values (#{privilegeCode},#{icon},#{remark},#{status},#{erpDomainSysId},#{orderNum},#{pid},#{modified},#{id},#{privilegeType},#{erpSysId},#{created},#{privilegeUrl},#{privilegeName},#{flagLeaf})
+</insert>
+<!-- ######################## 删除操作 ############################## -->
+ <!-- 删除数据 -->
+<delete id="delete_erp_privilege" >
+	delete from erp_privilege
+	<include refid="namespace_erpprivilege.where-all-condition" ></include>
+</delete>
+</mapper>

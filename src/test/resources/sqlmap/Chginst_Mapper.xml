@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="namespace_chginst">
+<resultMap id="chginst" type="com.retail.xx.entity.Chginst" >
+		<result property="trgsvr" column="TRGSVR" jdbcType="NVARCHAR" ></result>
+		<result property="chgtyp" column="CHGTYP" jdbcType="NVARCHAR" ></result>
+		<result property="chgcod" column="CHGCOD" jdbcType="NVARCHAR" ></result>
+		<result property="syscod" column="SYSCOD" jdbcType="NVARCHAR" ></result>
+		<result property="srcusr" column="SRCUSR" jdbcType="NVARCHAR" ></result>
+		<result property="srcsts" column="SRCSTS" jdbcType="NVARCHAR" ></result>
+		<result property="srcdat" column="SRCDAT" jdbcType="INTEGER" ></result>
+		<result property="chgdat" column="CHGDAT" jdbcType="INTEGER" ></result>
+		<result property="chgusr" column="CHGUSR" jdbcType="NVARCHAR" ></result>
+		<result property="srctim" column="SRCTIM" jdbcType="INTEGER" ></result>
+		<result property="prtcod" column="PRTCOD" jdbcType="NVARCHAR" ></result>
+		<result property="oid" column="OID" jdbcType="NVARCHAR" ></result>
+		<result property="filcnt" column="FILCNT" jdbcType="INTEGER" ></result>
+		<result property="chgcnt" column="CHGCNT" jdbcType="INTEGER" ></result>
+		<result property="chgsts" column="CHGSTS" jdbcType="NVARCHAR" ></result>
+		<result property="srccnt" column="SRCCNT" jdbcType="INTEGER" ></result>
+  </resultMap>
+	<!-- ##########################查询####################### -->
+ 	<!-- 查询表 -->
+<sql id="select_all_cloumn">
+	select TRGSVR,CHGTYP,CHGCOD,SYSCOD,SRCUSR,SRCSTS,SRCDAT,CHGDAT,CHGUSR,SRCTIM,PRTCOD,OID,FILCNT,CHGCNT,CHGSTS,SRCCNT from CHGINST
+</sql>
+<!-- 条件 -->
+<sql id="where-all-condition">
+ 	<trim prefix="where" prefixOverrides="and">
+ 	 <if test="trgsvr!= null" >
+		and TRGSVR=#{trgsvr}
+ 	 </if>
+ 	 <if test="chgtyp!= null" >
+		and CHGTYP=#{chgtyp}
+ 	 </if>
+ 	 <if test="chgcod!= null" >
+		and CHGCOD=#{chgcod}
+ 	 </if>
+ 	 <if test="syscod!= null" >
+		and SYSCOD=#{syscod}
+ 	 </if>
+ 	 <if test="srcusr!= null" >
+		and SRCUSR=#{srcusr}
+ 	 </if>
+ 	 <if test="srcsts!= null" >
+		and SRCSTS=#{srcsts}
+ 	 </if>
+ 	 <if test="srcdat!= null" >
+		and SRCDAT=#{srcdat}
+ 	 </if>
+ 	 <if test="chgdat!= null" >
+		and CHGDAT=#{chgdat}
+ 	 </if>
+ 	 <if test="chgusr!= null" >
+		and CHGUSR=#{chgusr}
+ 	 </if>
+ 	 <if test="srctim!= null" >
+		and SRCTIM=#{srctim}
+ 	 </if>
+ 	 <if test="prtcod!= null" >
+		and PRTCOD=#{prtcod}
+ 	 </if>
+ 	 <if test="oid!= null" >
+		and OID=#{oid}
+ 	 </if>
+ 	 <if test="filcnt!= null" >
+		and FILCNT=#{filcnt}
+ 	 </if>
+ 	 <if test="chgcnt!= null" >
+		and CHGCNT=#{chgcnt}
+ 	 </if>
+ 	 <if test="chgsts!= null" >
+		and CHGSTS=#{chgsts}
+ 	 </if>
+ 	 <if test="srccnt!= null" >
+		and SRCCNT=#{srccnt}
+ 	 </if>
+ 	</trim>
+</sql>
+ 	 <!-- 查询总数 -->
+<select id="count_CHGINST" resultType="java.lang.Long">
+	select count(*) from CHGINST
+	<include refid="namespace_chginst.where-all-condition" ></include>
+</select>
+ 	 <!-- 查询单条记录 -->
+<select id="selectOne_CHGINST" resultMap="chginst">
+	<include refid="namespace_chginst.select_all_cloumn" ></include>
+	<include refid="namespace_chginst.where-all-condition" ></include>
+	<include refid="commonMapper.sortSql" ></include>
+</select>
+ 	  	<!-- 查询集合/分页 -->
+<select id="select_CHGINST" resultMap="chginst">
+	select * from ( 
+	<include refid="namespace_chginst.select_all_cloumn" ></include>
+	<include refid="namespace_chginst.where-all-condition" ></include>
+	<include refid="commonMapper.limitSql" ></include>
+	)t
+	<include refid="commonMapper.sortSql" ></include>
+</select>
+ <!-- ######################### 插入操作 ######################## -->
+<!-- 插入单条 -->
+<insert id="insert_CHGINST" useGeneratedKeys="true" keyProperty="chgcod" >
+	insert into CHGINST (TRGSVR,CHGTYP,CHGCOD,SYSCOD,SRCUSR,SRCSTS,SRCDAT,CHGDAT,CHGUSR,SRCTIM,PRTCOD,OID,FILCNT,CHGCNT,CHGSTS,SRCCNT) values (#{trgsvr},#{chgtyp},#{chgcod},#{syscod},#{srcusr},#{srcsts},#{srcdat},#{chgdat},#{chgusr},#{srctim},#{prtcod},#{oid},#{filcnt},#{chgcnt},#{chgsts},#{srccnt})
+</insert>
+<!-- ######################## 删除操作 ############################## -->
+ <!-- 删除数据 -->
+<delete id="delete_CHGINST" >
+	delete from CHGINST
+	<include refid="namespace_chginst.where-all-condition" ></include>
+</delete>
+</mapper>

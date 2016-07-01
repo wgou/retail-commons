@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="test" >
+  <resultMap id="testBean" type="com.retail.xx.entity.TestBean" >
+  	<result property="id" column="ID" jdbcType="INTEGER"></result>
+  	<result property="name" column="NAMES" jdbcType="VARCHAR"></result>
+  	<result property="addre" column="ADDRE" jdbcType="VARCHAR"></result>
+  	<result property="phone" column="PHONE" jdbcType="VARCHAR"></result>
+   </resultMap>
+   
+   <!-- ##########################查询开始####################### -->
+   <!-- 查询表 -->
+   <sql id="select_all_cloumn">
+   		select id,name,addre,phone from test
+   </sql>
+   <!-- 条件 -->
+   <sql id="where-all-condition">
+   	  	<trim prefix="where" prefixOverrides="and">
+	   		<if test="id != null">
+	  			and id=#{id}
+	  		</if>
+			<if test="name !=null">
+				and name=#{name}
+			</if>
+			<if test="addre !=null">
+				and addre=#{addre}
+			</if>
+			<if test="phone !=null">
+				and phone=#{phone}
+			</if>
+		</trim>
+   </sql>
+   <!-- 查询总数 -->
+   <select id="count_test" resultType="java.lang.Long">
+  		select count(id) from test
+  		<include refid="where-all-condition"></include>
+   </select>
+   
+     <!-- 查询总数 -->
+   <select id="select_sum" resultType="java.lang.Long">
+  		select count(id) from test
+  		<include refid="where-all-condition"></include>
+   </select>
+   <!-- 查询单条记录 -->
+   <select id="selectOne_test" resultMap="testBean">
+   	<include refid="select_all_cloumn"></include>
+    <include refid="where-all-condition"></include>
+    <include refid="commonMapper.sortSql"></include>
+   </select>
+  	<!-- 查询集合/分页 -->
+  	<select id="select_test" resultMap="testBean">
+  		select * from (
+  			<include refid="select_all_cloumn"></include>
+   			<include refid="where-all-condition"></include>
+   			<include refid="commonMapper.limitSql"></include>
+   		)t
+   		<include refid="commonMapper.sortSql"></include>
+  	</select>
+  <!-- ######################### 插入操作 ######################## -->	
+  
+  	<!-- 插入单条 -->
+  	<insert id="insert_test" useGeneratedKeys="true" keyProperty="id">
+  		insert into test (name,addre,phone) values(#{name},#{addre},#{phone})
+  	</insert>
+  	 <!-- 批量插入 -->
+  	<insert id="insertBatch_test">
+  		insert into test (name,addre,phone) values 
+  		<foreach collection="list" item="item" separator=",">
+  			(#{item.name},#{item.addre},#{item.phone})
+  		</foreach>
+  	</insert>
+  	
+  	<!-- ########################## 修改操作 ############################## -->
+  	<sql id="update-all-cloumn">
+  		<trim prefix="set"  prefixOverrides=",">
+		<if test="name !=null">
+			,name=#{name}
+		</if>
+		<if test="addre !=null">
+			 ,addre=#{addre}
+		</if>
+		<if test="phone !=null">
+			,phone=#{phone}
+		</if>
+		</trim>
+  	</sql>
+  	<update id="update_test" >
+  		update test 
+  		<include refid="update-all-cloumn"/>
+  		where id = #{id}
+  	</update>
+  	
+  	 <update id="updateBatch_test" parameterType="com.retail.xx.entity.TestBean">
+  		update test t set t.name=#{name}
+  		<if test="extField != null and extField.ids != null ">
+  		<where>
+	  		id in 
+	  		<foreach collection="extField.ids" item="item" separator="," open="(" close=")" >   
+	   			#{item}
+			</foreach> 
+		</where>
+		</if>
+  	</update>
+  	 <!-- ######################## 删除操作 ############################## -->
+  	 <!-- 删除数据 -->
+  	 <delete id="delete_test">
+  	 	delete from test 
+  	 	<include refid="where-all-condition"></include>
+  	 </delete>
+  	
+  	<!-- 批量删除 -->
+  	<delete id="deleteBatch_test">
+  		delete from test 
+  		<trim prefix="where" prefixOverrides="and">
+	  		<if test="extField != null and extField.ids != null ">
+	  			and id in 
+	  			<foreach collection="extField.ids" item="item" separator="," open="(" close=")" >   
+		   			#{item.id}
+				</foreach> 
+	  		</if>
+	  		<if test="extField != null and extField.names != null ">
+	  			and name in 
+	  			<foreach collection="extField.names" item="item" separator="," open="(" close=")" >   
+		   			#{item.name}
+				</foreach> 
+	  		</if>
+  		</trim>
+  	</delete>
+  	
+  	<!-- ################################## 多表联查 ######################################## -->
+  	<select id="select_test_card" resultType="map">
+  			select t.id,t.name,t.phone,t.addre,t1.cardNo,t1.type from test t left join card t1 on t.id=t1.id and t.name=#{name} 
+  	</select>
+</mapper>

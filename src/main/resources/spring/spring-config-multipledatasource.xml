@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans 
+    		http://www.springframework.org/schema/beans/spring-beans.xsd
+    		http://www.springframework.org/schema/tx
+       		http://www.springframework.org/schema/tx/spring-tx.xsd
+       		http://www.springframework.org/schema/aop
+       		http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+       		http://www.springframework.org/schema/context
+     		http://www.springframework.org/schema/context/spring-context.xsd"
+       default-autowire="byName">
+
+	<bean id="dataSource" class="com.retail.commons.dao.MultipleDataSource">
+        <property name="targetDataSources">
+            <map key-type="java.lang.String">
+                <entry value-ref="mysql" key="mysql"/>
+            	<entry value-ref="mysql1" key="mysql1"/>
+            </map>
+        </property>
+        <property name="defaultTargetDataSource" ref="mysql1" />
+	</bean>
+ 	<!-- 注解事务 -->
+    <bean id="transactionManager"
+          class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource" />
+    </bean>
+    <tx:annotation-driven transaction-manager="transactionManager" proxy-target-class="true" />
+    
+    	<!-- mybatis配置 -->
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="dataSource" />
+        <property name="configLocation" value="classpath:sqlmap-config.xml" />
+        <property name="mapperLocations">
+            <list>
+                <value>classpath*:sqlmap/**Mapper.xml</value>
+            </list>
+        </property>
+    </bean>
+    <!--拦截选择数据源-->
+    <bean id="aopHandler" class="com.retail.commons.dao.ext.MultipleAopHandler"/>
+	<aop:config proxy-target-class="true">
+		<aop:aspect ref="aopHandler">
+			<aop:pointcut id="serviceAopHandlerPointcut" expression="(execution(* com.retail..dao.*.*(..))) or (execution(* com.retail..base.BaseDao.*(..)))" />
+		    <aop:around pointcut-ref="serviceAopHandlerPointcut" method="selectDataType"/>
+	    </aop:aspect>
+	</aop:config>
+    
+        
+</beans>

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans 
+       		http://www.springframework.org/schema/beans/spring-beans.xsd
+       		http://www.springframework.org/schema/context 
+       		http://www.springframework.org/schema/context/spring-context.xsd"
+       default-autowire="byName">
+
+    <context:component-scan base-package="com.retail"/>
+
+    <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_OVERRIDE"/>
+        <property name="ignoreResourceNotFound" value="true"/>
+        <property name="locations">
+            <list>
+                <value>classpath:jdbc.properties</value>
+                <value>classpath:monitor.properties</value>
+            </list>
+        </property>
+    </bean>
+    
+    <!-- 基于mybatis的orm配置 
+    <import resource="classpath:spring/spring-config-dao.xml"/>
+    -->
+   
+    <import resource="classpath:spring/spring-config-dao-1.xml"/>
+    <import resource="classpath:spring/spring-config-dao-2.xml"/>
+    <import resource="classpath:spring/spring-config-multipledatasource.xml"/>
+    
+    <!-- 统一异常日志、方法监控配置 -->
+    <import resource="classpath:spring/spring-config-ext.xml"/>
+    
+</beans>

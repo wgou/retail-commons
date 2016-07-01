@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="commonMapper">
+	<!-- 分页使用 -->
+  <sql id="limitSql">
+        <if test="extField != null and extField.offset != null and extField.limit != null">
+            limit #{extField.offset}, #{extField.limit}
+        </if>
+    </sql>
+    
+	<!-- 排序规则 -->
+    <sql id="sortSql">
+        <if test="orderByItem != null">
+             ORDER BY 
+            <foreach item="item" collection="orderByItem" open="" separator="," close="">
+              ${item.k}
+              <choose>
+                    <when test="item.v == 'ASC'">
+                         ASC
+                    </when>
+                    <otherwise>
+                         DESC
+                    </otherwise>
+              </choose>
+            </foreach>
+        </if>
+    </sql>
+    
+    <!-- 扩展查询字段 -->
+    <sql id="where-other-cloumn">
+    <if test="extField != null">
+    	<foreach collection="extField.keys" item="k" separator="and">   
+   			 <if test="null != extField[k]">    
+    		    ${k} = #{extField[#{k}]}  
+   		 	</if>  
+		</foreach> 
+	</if>
+    </sql>
+    
+</mapper>
